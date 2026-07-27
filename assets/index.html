@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Starter Assets — Console Craft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-dark: #0a0a0a;
+    --text-main: #ededed;
+    --text-muted: #888;
+    --accent: #fff;
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --card-border: rgba(255, 255, 255, 0.08);
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Spectral', serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-weight: 400;
+    margin-top: 0;
+  }
+
+  p {
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 20px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 60px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+  }
+
+  .header p {
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    border-left: 4px solid var(--card-border);
+    padding-left: 16px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 80px;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .preview-box {
+    background: #111;
+    border-radius: 8px;
+    height: 180px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 10px;
+  }
+
+  .preview-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .card-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+    color: var(--accent);
+    word-break: break-all;
+  }
+
+  .btn-group {
+    margin-top: auto;
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn {
+    display: inline-block;
+    flex: 1;
+    padding: 10px 0;
+    text-align: center;
+    text-decoration: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary {
+    background: #fff;
+    color: #000;
+    border: 1px solid #fff;
+  }
+
+  .btn-primary:hover {
+    background: #e0e0e0;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .btn-ghost:hover {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+  }
+  
+  .back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.9rem;
+  }
+  
+  .back-link:hover {
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <a href="../" class="back-link">← Back to Console Craft</a>
+  
+  <div class="header">
+    <h1>Console Craft Starter Assets</h1>
+    <p>Download free background images and custom Willis-style nameplates to kickstart your Hauptwerk sample set layouts.</p>
+  </div>
+
+  <h2 class="section-title">Console Backgrounds</h2>
+  <div class="grid">
+    <!-- Console 2 -->
+    <div class="card">
+      <div class="preview-box">
+        <img src="console2.jpg" alt="console2.jpg preview" loading="lazy">
+      </div>
+      <div class="card-title">console2.jpg</div>
+      <div class="btn-group">
+        <a href="console2.jpg" download class="btn btn-primary">Download JPG</a>
+      </div>
+    </div>
+    
+    <!-- RConsole 2 -->
+    <div class="card">
+      <div class="preview-box">
+        <img src="rconsole2.jpg" alt="rconsole2.jpg preview" loading="lazy">
+      </div>
+      <div class="card-title">rconsole2.jpg</div>
+      <div class="btn-group">
+        <a href="rconsole2.jpg" download class="btn btn-primary">Download JPG</a>
+      </div>
+    </div>
+
+    <!-- Console 4 -->
+    <div class="card">
+      <div class="preview-box">
+        <img src="console4.jpg" alt="console4.jpg preview" loading="lazy">
+      </div>
+      <div class="card-title">console4.jpg</div>
+      <div class="btn-group">
+        <a href="console4.jpg" download class="btn btn-primary">Download JPG</a>
+      </div>
+    </div>
+
+    <!-- Console 5 -->
+    <div class="card">
+      <div class="preview-box">
+        <img src="console5.jpg" alt="console5.jpg preview" loading="lazy">
+      </div>
+      <div class="card-title">console5.jpg</div>
+      <div class="btn-group">
+        <a href="console5.jpg" download class="btn btn-primary">Download JPG</a>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Division Nameplates</h2>
+  <p style="margin-top: -20px; margin-bottom: 30px;">Each plate is provided in both transparent PNG and Hauptwerk-compatible BMP formats.</p>
+  <div class="grid">
+    
+    <!-- Antiphonal -->
+    <div class="card">
+      <div class="preview-box">
+        <img src="antiphonalPlates.png" alt="Antiphonal Plates preview" loading="lazy">
+      </div>
+      <div class="card-title">Antiphonal Plates</div>
+      <div class="btn-group">
+        <a href="antiphonalPlates.png" download class="btn btn-primary">.PNG</a>
+        <a href="antiphonalPlates.bmp" download class="btn btn-ghost">.BMP</a>
+      </div>
+    </div>
+
+    <!-- Choir -->
+    <div class="card">
+      <div class="preview-box">
+        <img src="choirPlates.png" alt="Choir Plates preview" loading="lazy">
+      </div>
+      <div class="card-title">Choir Plates</div>
+      <div class="btn-group">
+        <a href="choirPlates.png" download class="btn btn-primary">.PNG</a>
+        <a href="choirPlates.bmp" download class="btn btn-ghost">.BMP</a>
+      </div>
+    </div>
+
+    <!-- Echo -->
+    <div class="card">
+      <div class="preview-box">
+        <img src="echoPlates.png" alt="Echo Plates preview" loading="lazy">
+      </div>
+      <div class="card-title">Echo Plates</div>
+      <div class="btn-group">
+        <a href="echoPlates.png" download class="btn btn-primary">.PNG</a>
+        <a href="echoPlates.bmp" download class="btn btn-ghost">.BMP</a>
+      </div>
+    </div>
+
+    <!-- Great -->
+    <div class="card">
+      <div class="preview-box">
+        <img src="greatPlates.png" alt="Great Plates preview" loading="lazy">
+      </div>
+      <div class="card-title">Great Plates</div>
+      <div class="btn-group">
+        <a href="greatPlates.png" download class="btn btn-primary">.PNG</a>
+        <a href="greatPlates.bmp" download class="btn btn-ghost">.BMP</a>
+      </div>
+    </div>
+
+    <!-- Pedal -->
+    <div class="card">
+      <div class="preview-box">
+        <img src="pedalPlates.png" alt="Pedal Plates preview" loading="lazy">
+      </div>
+      <div class="card-title">Pedal Plates</div>
+      <div class="btn-group">
+        <a href="pedalPlates.png" download class="btn btn-primary">.PNG</a>
+        <a href="pedalPlates.bmp" download class="btn btn-ghost">.BMP</a>
+      </div>
+    </div>
+
+    <!-- Solo -->
+    <div class="card">
+      <div class="preview-box">
+        <img src="soloPlates.png" alt="Solo Plates preview" loading="lazy">
+      </div>
+      <div class="card-title">Solo Plates</div>
+      <div class="btn-group">
+        <a href="soloPlates.png" download class="btn btn-primary">.PNG</a>
+        <a href="soloPlates.bmp" download class="btn btn-ghost">.BMP</a>
+      </div>
+    </div>
+
+    <!-- Swell -->
+    <div class="card">
+      <div class="preview-box">
+        <img src="swellPlates.png" alt="Swell Plates preview" loading="lazy">
+      </div>
+      <div class="card-title">Swell Plates</div>
+      <div class="btn-group">
+        <a href="swellPlates.png" download class="btn btn-primary">.PNG</a>
+        <a href="swellPlates.bmp" download class="btn btn-ghost">.BMP</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
