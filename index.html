@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Console Craft — Organ ODF Builder for Hauptwerk</title>
+<meta name="description" content="Console Craft is a visual editor for building Hauptwerk Custom Organ Design Module (CODM) files — defining divisions, stops, couplers, and canvas layout with precision, eliminating manual XML authoring.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* Styling for about section layout and larger logo integration */
+  .about-container {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: left;
+  }
+  .about-photo-frame {
+    flex-shrink: 0;
+    width: 220px;
+    aspect-ratio: 1122 / 1402;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #222;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .about-photo-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .about-text {
+    flex-grow: 1;
+    line-height: 1.7;
+  }
+  /* Clear, larger logo styling for header */
+  .brand-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .hero-badge-logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .hero-badge-logo img {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  /* App logo showcase box in About section */
+  .about-logo-showcase {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+  }
+  .about-logo-showcase img {
+    width: 64px;
+    height: 64px;
+    border-radius: 10px;
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  }
+  .about-logo-showcase span {
+    font-size: 0.95rem;
+    color: var(--text-muted, #ccc);
+    line-height: 1.5;
+  }
+  @media (max-width: 768px) {
+    .about-container {
+      flex-direction: column;
+      text-align: center;
+    }
+    .about-text {
+      text-align: left;
+    }
+    .about-logo-showcase {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="grain-overlay" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="#top" class="brand" style="display: flex; align-items: center; gap: 12px;">
+      <!-- Larger, clear logo in header -->
+      <img src="images/applogo.png" alt="Console Craft Logo" class="brand-logo">
+      Console&nbsp;Craft
+    </a>
+    <nav class="site-nav">
+      <a href="#features">Features</a>
+      <a href="#validate">Validation</a>
+      <a href="#about">About</a>
+      <a class="nav-cta" href="#get-it">Get it</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <div class="hero-badge-logo">
+         
+          <p class="eyebrow" style="margin: 0;">Desktop Application · Installer &amp; Portable Versions</p>
+        </div>
+        
+        <h1>Architect Hauptwerk organs<br> without hand-coding XML.</h1>
+        <p class="hero-lede">
+          Console Craft is an advanced WYSIWYG visual editor engineered for Hauptwerk's Custom Organ Design Module (CODM) architecture. 
+          Map divisions, stops, and couplers effortlessly on an interactive canvas matching true console pixel geometry, 
+          utilize pre-verified reference ranges, and export production-ready ODF files instantly.
+        </p>
+        <div class="hero-actions">
+          <a href="#get-it" class="btn btn-primary">Download Console Craft</a>
+          <a href="#features" class="btn btn-ghost">Explore capabilities</a>
+        </div>
+        <p class="hero-note">StopCode ranges strictly adhere to standard Hauptwerk specifications — Great, Swell, Pedal, Choir, Solo, Echo, and Antiphonal fully integrated.</p>
+      </div>
+
+      <div class="hero-frame" aria-hidden="false">
+        <div class="console-panel">
+          <div class="console-panel-glow"></div>
+          <img src="images/hauptwerk-console.webp" alt="Console Craft canvas editor displaying a Cavaillé-Coll style organ console layout." loading="eager">
+        </div>
+        <div class="frame-caption">Console Craft — WYSIWYG canvas mapped to exact pixel geometry</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STOP RAIL DIVIDER -->
+  <div class="stop-rail" role="presentation" aria-hidden="true">
+    <svg class="stop-rail-svg" viewBox="0 0 1400 90" preserveAspectRatio="xMidYMid meet">
+      <line x1="0" y1="18" x2="1400" y2="18" class="rail-line"/>
+      <line x1="0" y1="72" x2="1400" y2="72" class="rail-line"/>
+    </svg>
+    <div class="stop-rail-knobs">
+      <div class="knob"><span>Open Diapason</span></div>
+      <div class="knob"><span>Great to Pedal</span></div>
+      <div class="knob"><span>Swell to Great</span></div>
+      <div class="knob"><span>Choir to Great</span></div>
+      <div class="knob"><span>Solo to Swell</span></div>
+      <div class="knob"><span>Echo Unison Off</span></div>
+      <div class="knob"><span>Antiphonal Sub</span></div>
+      <div class="knob knob-accent"><span>Tremulant</span></div>
+    </div>
+  </div>
+
+  <!-- THE CHALLENGE -->
+  <section class="problem">
+    <div class="wrap problem-inner">
+      <p class="eyebrow">The Engineering Challenge</p>
+      <h2>Traditional ODF authoring demands exhaustive manual precision.</h2>
+      <div class="problem-grid">
+        <div class="problem-card">
+          <span class="pc-mark">2201</span>
+          <p>StopCode parameters are division-critical. Minor errors in pitch or octave designation cause severe transposition issues upon loading.</p>
+        </div>
+        <div class="problem-card">
+          <span class="pc-mark">1611</span>
+          <p>Complex coupler configurations require managing intricate numeric codes, resulting in constant reference manual lookups.</p>
+        </div>
+        <div class="problem-card">
+          <span class="pc-mark">x, y</span>
+          <p>Pixel-exact console positioning requires tedious manual coordinate computation and layout adjustments.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="features">
+    <div class="wrap">
+      <p class="eyebrow">Core Functionality</p>
+      <h2>Streamlined ODF development designed for organ builders.</h2>
+
+      <div class="feature-row">
+        <div class="feature-text">
+          <span class="feature-index">Divisions &amp; Stops</span>
+          <h3>Automated StopCode logic for Great, Swell, Pedal, Choir, Solo, Echo, and Antiphonal.</h3>
+          <p>Select your division and let Console Craft auto-assign accurate base ranges. Configure ranks using standard harmonic lists or custom inputs, ensuring flawless transposition mathematics across every pipe rank.</p>
+        </div>
+        <div class="feature-image">
+          <img src="images/stop-properties.webp" alt="Stop properties configuration panel." loading="lazy">
+        </div>
+      </div>
+
+      <div class="feature-row reverse">
+        <div class="feature-text">
+          <span class="feature-index">Advanced Couplers</span>
+          <h3>Structured coupler management via intuitive categorized selections.</h3>
+          <p>Browse couplers grouped logically by division—such as Great, Swell, Unison Off, and Octave variants—eliminating numerical guesswork and streamlining console architecture.</p>
+        </div>
+        <div class="feature-image feature-image-stack">
+          <img src="images/coupler-picker.webp" alt="Coupler selection interface." loading="lazy">
+          <div class="stack-pair">
+            <img src="images/coupler-grouped-great.webp" alt="Grouped Great couplers." loading="lazy">
+            <img src="images/coupler-grouped-echo.webp" alt="Grouped Echo couplers." loading="lazy">
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-row">
+        <div class="feature-text">
+          <span class="feature-index">WYSIWYG Canvas</span>
+          <h3>Precise visual positioning mirroring native Hauptwerk constraints.</h3>
+          <p>Position drawknobs, pistons, and rows intuitively with direct drag-and-drop mechanics. Handle multi-page elements effortlessly with clear indicator markers.</p>
+        </div>
+        <div class="feature-image">
+          <img src="images/canvas-swell.webp" alt="Canvas swell division layout view." loading="lazy">
+        </div>
+      </div>
+
+      <div class="feature-row reverse">
+        <div class="feature-text">
+          <span class="feature-index">Enclosures &amp; Samples</span>
+          <h3>Integrated management of acoustic environments and sample mappings.</h3>
+          <p>Configure swell box filter models, tremulant behaviors, and link main, short-release, and medium-release sample paths directly to their respective pipe ranks.</p>
+        </div>
+        <div class="feature-image">
+          <img src="images/enclosure-samples.webp" alt="Enclosure and sample mapping panel." loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALIDATION -->
+  <section id="validate" class="validate">
+    <div class="wrap validate-inner">
+      <div class="validate-copy">
+        <p class="eyebrow">Preflight Diagnostics</p>
+        <h2>Proactive project verification before compilation.</h2>
+        <p>Console Craft's built-in validation engine intercepts common structural errors—including duplicate identifiers, unassigned sample directories, and invalid MIDI mappings—preventing silent load failures inside Hauptwerk.</p>
+        <ul class="validate-list">
+          <li><span class="v-blocker">Blocker</span> Duplicate rank designations detected.</li>
+          <li><span class="v-warning">Warning</span> Unassigned sample directory pointers.</li>
+          <li><span class="v-pass">Pass</span> All MIDI ranges and parameters verified successfully.</li>
+        </ul>
+      </div>
+      <div class="validate-image">
+        <img src="images/validate-project.webp" alt="Project validation diagnostics screen." loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- CATHEDRAL BREAK -->
+  <section class="organ-break" role="img" aria-label="A grand pipe organ facade in a cathedral.">
+    <div class="organ-break-scrim"></div>
+    <div class="wrap organ-break-inner">
+      <p class="eyebrow">The Ultimate Objective</p>
+      <p class="organ-break-line">Precision engineering dedicated to authentic acoustic realization.</p>
+    </div>
+  </section>
+
+  <!-- ABOUT THE DEVELOPER -->
+  <section id="about" class="stack">
+    <div class="wrap">
+      <p class="eyebrow">About the Creator</p>
+      <h2>Engineered with passion for music and technical precision.</h2>
+      
+      <!-- App Logo Showcase Added Here -->
+      <div class="about-logo-showcase" style="max-width: 900px; margin: 0 auto 30px auto;">
+        <img src="images/applogo.png" alt="Console Craft Logo">
+        <span><strong>Console Craft Application Identity:</strong> Built on a precise proportional coordinate engine that maps high-accuracy pixel geometries directly to Hauptwerk CODM specifications.</span>
+      </div>
+
+      <div class="about-container">
+        <!-- Developer Photo Placeholder (Maintains 1122x1402 proportions via CSS) -->
+        <div class="about-photo-frame">
+          <img src="images/profile.png" alt="Adeboye Thompson" loading="lazy">
+        </div>
+        
+        <div class="about-text">
+          <p>
+            Console Craft is developed by <strong>Adeboye Thompson</strong>, a software developer, organist, and organ enthusiast based in Lagos, Nigeria. 
+            With an academic background in Cellular and Molecular Biology from the University of Texas at Austin (2005), his technical journey is driven by a deep fascination with electronics, advanced programming, precision woodwork, sound processing, and structural design. Console Craft bridges his professional software expertise with his lifelong dedication to pipe organ artistry.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+ <!-- GET IT -->
+  <section id="get-it" class="get-it">
+    <div class="wrap get-it-inner">
+      <p class="eyebrow">Deployment &amp; Distribution</p>
+      <h2>Download Console Craft for your workflow.</h2>
+      <p style="margin-bottom: 24px; color: var(--text-muted, #aaa);">
+        Choose between the standard installation package or the standalone portable build depending on your setup preferences. Both versions include full application capabilities.
+      </p>
+      <div class="get-it-actions">
+        <a href="https://consolecraftapp.gumroad.com/l/ilamlo" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-large" id="installer-link">Download Installer (.exe)</a>
+        <a href="https://consolecraftapp.gumroad.com/l/ilamlo" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-large" id="portable-link">Download Portable Version</a>
+      </div>
+      <p class="get-it-note">Available for Windows</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <span>Console Craft — an ODF builder for Hauptwerk by Adeboye Thompson.</span>
+    <span class="footer-dim">Not affiliated with Milan Digital Audio.</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
