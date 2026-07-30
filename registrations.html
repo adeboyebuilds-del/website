@@ -203,32 +203,57 @@
       </div>
 
       <!-- INVITATION & SUBMISSION SECTION -->
-      <div id="submit-preset" class="submit-box">
-        <p class="eyebrow" style="margin-bottom: 8px;">Organist Community</p>
-        <h3>Submit Your Registration Presets</h3>
-        <p>
-          Have you developed specific combination schemes, choir accompaniments, or solo registrations for Hauptwerk sample sets? Share them here to help other organists achieve authentic voicings for their performances.
-        </p>
+     <!-- INVITATION & SUBMISSION SECTION -->
+<div id="submit-preset" class="submit-box">
+  <p class="eyebrow" style="margin-bottom: 8px;">Organist Community</p>
+  <h3>Submit Your Registration Presets</h3>
+  <p>
+    Have you developed custom combination schemes or registration setups for Hauptwerk sample sets? 
+    Submit them below to be featured on your own dedicated creator page with full credit and profile links!
+  </p>
 
-        <div class="submit-steps">
-          <div class="submit-step-card">
-            <span>01. Prepare Details</span>
-            <p style="margin: 0; font-size: 0.9rem; color: #bbb;">Sample set name, organist name, and intended musical style/period.</p>
-          </div>
-          <div class="submit-step-card">
-            <span>02. Stop Listing / File</span>
-            <p style="margin: 0; font-size: 0.9rem; color: #bbb;">Provide your combination list (text, PDF) or Hauptwerk combination export file.</p>
-          </div>
-          <div class="submit-step-card">
-            <span>03. Get Listed</span>
-            <p style="margin: 0; font-size: 0.9rem; color: #bbb;">Your registration set will be published with full credit and link to your profile.</p>
-          </div>
-        </div>
+  <form id="presetForm" onsubmit="handlePresetSubmit(event)" style="max-width: 640px; margin: 32px auto 0 auto; text-align: left;">
+    
+    <div style="margin-bottom: 18px;">
+      <label for="organistName" style="display: block; font-size: 0.9rem; margin-bottom: 6px; color: var(--text-muted, #ccc);">
+        Organist / Creator Name *
+      </label>
+      <input type="text" id="organistName" required placeholder="e.g. Adeboye Thompson" style="width: 100%; padding: 12px 14px; border-radius: 6px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); color: #fff; font-family: inherit; font-size: 0.95rem;">
+    </div>
 
-        <a href="mailto:contact@example.com?subject=Console%20Craft%20Registration%20Submission" class="btn btn-primary btn-large">
-          Submit Registrations via Email
-        </a>
-      </div>
+    <div style="margin-bottom: 18px;">
+      <label for="organistLink" style="display: block; font-size: 0.9rem; margin-bottom: 6px; color: var(--text-muted, #ccc);">
+        Website or YouTube Channel (Optional for credit link)
+      </label>
+      <input type="url" id="organistLink" placeholder="https://youtube.com/@yourchannel" style="width: 100%; padding: 12px 14px; border-radius: 6px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); color: #fff; font-family: inherit; font-size: 0.95rem;">
+    </div>
+
+    <div style="margin-bottom: 18px;">
+      <label for="sampleSet" style="display: block; font-size: 0.9rem; margin-bottom: 6px; color: var(--text-muted, #ccc);">
+        Sample Set Name *
+      </label>
+      <input type="text" id="sampleSet" required placeholder="e.g. Friesach, Salisbury Cathedral, Bückeburg" style="width: 100%; padding: 12px 14px; border-radius: 6px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); color: #fff; font-family: inherit; font-size: 0.95rem;">
+    </div>
+
+    <div style="margin-bottom: 24px;">
+      <label for="presetDetails" style="display: block; font-size: 0.9rem; margin-bottom: 6px; color: var(--text-muted, #ccc);">
+        Registration Details & Combination List *
+      </label>
+      <textarea id="presetDetails" rows="6" required placeholder="Paste your general combinations, stop numbers, or descriptions here. You can also mention if you have attachments to attach to the email." style="width: 100%; padding: 12px 14px; border-radius: 6px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); color: #fff; font-family: inherit; font-size: 0.95rem; resize: vertical;"></textarea>
+    </div>
+
+    <div style="text-align: center;">
+      <button type="submit" class="btn btn-primary btn-large" style="width: 100%; cursor: pointer;">
+        Submit Presets to Console Craft
+      </button>
+      <p style="font-size: 0.8rem; color: #888; margin-top: 10px;">
+        Will open your mail client addressed to <strong>consolecraftapp@gmail.com</strong>
+      </p>
+    </div>
+
+  </form>
+</div>
+
 
     </div>
   </section>
@@ -244,5 +269,22 @@
 </footer>
 
 <script src="script.js"></script>
+  <script>
+function handlePresetSubmit(event) {
+  event.preventDefault();
+  
+  const name = document.getElementById('organistName').value;
+  const link = document.getElementById('organistLink').value || 'Not provided';
+  const sampleSet = document.getElementById('sampleSet').value;
+  const details = document.getElementById('presetDetails').value;
+
+  const subject = encodeURIComponent(`Preset Submission: ${sampleSet} by ${name}`);
+  const bodyText = `Organist Name: ${name}\r\nProfile/Channel Link: ${link}\r\nSample Set: ${sampleSet}\r\n\r\n-----------------------------------\r\nRegistration Details:\r\n-----------------------------------\r\n${details}`;
+  
+  const mailtoUrl = `mailto:consolecraftapp@gmail.com?subject=${subject}&body=${encodeURIComponent(bodyText)}`;
+  
+  window.location.href = mailtoUrl;
+}
+</script>
 </body>
 </html>
