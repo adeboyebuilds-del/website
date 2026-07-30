@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Organ Registrations & Presets — Console Craft</title>
+<meta name="description" content="Explore custom organ registration presets for Hauptwerk sample sets, or submit your own registration schemes to share with the community.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+<style>
+  /* Custom registration page layouts */
+  .reg-hero {
+    position: relative;
+    padding: 100px 0 80px 0;
+    text-align: center;
+  }
+  .reg-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    margin-top: 36px;
+  }
+  .reg-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  }
+  .reg-card:hover {
+    border-color: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
+  }
+  .reg-card-content h3 {
+    margin-top: 8px;
+    margin-bottom: 12px;
+    font-size: 1.4rem;
+  }
+  .reg-badge {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-muted, #ccc);
+  }
+  .reg-card-footer {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  /* Submission Box Styling */
+  .submit-box {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 40px;
+    margin-top: 60px;
+    text-align: center;
+  }
+  .submit-box h3 {
+    font-size: 1.6rem;
+    margin-bottom: 12px;
+  }
+  .submit-box p {
+    max-width: 640px;
+    margin: 0 auto 28px auto;
+    color: var(--text-muted, #aaa);
+    line-height: 1.6;
+  }
+  .submit-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    text-align: left;
+    margin: 32px 0;
+  }
+  .submit-step-card {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 8px;
+  }
+  .submit-step-card span {
+    font-family: 'IBM Plex Mono', monospace;
+    color: #e0a96d;
+    font-size: 0.85rem;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .brand-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+</style>
+</head>
+<body>
+
+<div class="grain-overlay" aria-hidden="true"></div>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="index.html" class="brand" style="display: flex; align-items: center; gap: 12px;">
+      <img src="images/applogo.png" alt="Console Craft Logo" class="brand-logo">
+      Console&nbsp;Craft
+    </a>
+    <nav class="site-nav">
+      <a href="index.html">Home</a>
+      <a href="registrations.html" class="active">Registrations</a>
+      <a href="#submit-preset" class="nav-cta">Submit Registration</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO SECTION WITH ORGAN BACKGROUND -->
+  <section class="organ-break reg-hero" role="img" aria-label="Grand pipe organ facade in a cathedral background">
+    <div class="organ-break-scrim"></div>
+    <div class="wrap organ-break-inner" style="position: relative; z-index: 2;">
+      <p class="eyebrow">Community &amp; Preset Library</p>
+      <h1 style="font-size: 2.8rem; margin-bottom: 16px;">Organ Registration Presets</h1>
+      <p class="organ-break-line" style="max-width: 720px; margin: 0 auto; font-size: 1.15rem;">
+        Discover curated combinations, stop setups, and registration lists for virtual pipe organ sample sets—or share your own configurations with fellow organists.
+      </p>
+    </div>
+  </section>
+
+  <!-- STOP RAIL DIVIDER -->
+  <div class="stop-rail" role="presentation" aria-hidden="true">
+    <svg class="stop-rail-svg" viewBox="0 0 1400 90" preserveAspectRatio="xMidYMid meet">
+      <line x1="0" y1="18" x2="1400" y2="18" class="rail-line"/>
+      <line x1="0" y1="72" x2="1400" y2="72" class="rail-line"/>
+    </svg>
+    <div class="stop-rail-knobs">
+      <div class="knob"><span>Friesach</span></div>
+      <div class="knob"><span>Plenum</span></div>
+      <div class="knob"><span>Fonds 8'</span></div>
+      <div class="knob"><span>Tutti</span></div>
+      <div class="knob"><span>Cori Spezzati</span></div>
+      <div class="knob knob-accent"><span>User Presets</span></div>
+    </div>
+  </div>
+
+  <!-- REGISTRATION SETS GRID -->
+  <section class="stack">
+    <div class="wrap">
+      <p class="eyebrow">Available Sample Sets</p>
+      <h2>Sample Set Registrations</h2>
+
+      <div class="reg-grid">
+
+        <!-- Friesach Card -->
+        <article class="reg-card">
+          <div class="reg-card-content">
+            <span class="reg-badge">Available Set</span>
+            <h3>Friesach Organ</h3>
+            <p style="color: var(--text-muted, #aaa); font-size: 0.95rem; line-height: 1.6;">
+              Custom combinations, stop registrations, and division setups for the popular Friesach parish church sample set. Includes liturgical and concert configurations.
+            </p>
+          </div>
+          <div class="reg-card-footer">
+            <span style="font-size: 0.85rem; color: #888;">Hauptwerk / CODM</span>
+            <a href="friesach.html" class="btn btn-ghost" style="padding: 6px 16px; font-size: 0.85rem;">View Registrations &rarr;</a>
+          </div>
+        </article>
+
+        <!-- Placeholder 1: Coming Soon -->
+        <article class="reg-card" style="opacity: 0.6; border-style: dashed;">
+          <div class="reg-card-content">
+            <span class="reg-badge">Upcoming</span>
+            <h3>More Sample Sets</h3>
+            <p style="color: var(--text-muted, #aaa); font-size: 0.95rem; line-height: 1.6;">
+              Additional registrations for Cavaillé-Coll, Schnitger, and Silbermann organs are currently being indexed and prepared for public download.
+            </p>
+          </div>
+          <div class="reg-card-footer">
+            <span style="font-size: 0.85rem; color: #888;">In Preparation</span>
+            <span style="font-size: 0.85rem; color: #666;">Coming Soon</span>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- INVITATION & SUBMISSION SECTION -->
+      <div id="submit-preset" class="submit-box">
+        <p class="eyebrow" style="margin-bottom: 8px;">Organist Community</p>
+        <h3>Submit Your Registration Presets</h3>
+        <p>
+          Have you developed specific combination schemes, choir accompaniments, or solo registrations for Hauptwerk sample sets? Share them here to help other organists achieve authentic voicings for their performances.
+        </p>
+
+        <div class="submit-steps">
+          <div class="submit-step-card">
+            <span>01. Prepare Details</span>
+            <p style="margin: 0; font-size: 0.9rem; color: #bbb;">Sample set name, organist name, and intended musical style/period.</p>
+          </div>
+          <div class="submit-step-card">
+            <span>02. Stop Listing / File</span>
+            <p style="margin: 0; font-size: 0.9rem; color: #bbb;">Provide your combination list (text, PDF) or Hauptwerk combination export file.</p>
+          </div>
+          <div class="submit-step-card">
+            <span>03. Get Listed</span>
+            <p style="margin: 0; font-size: 0.9rem; color: #bbb;">Your registration set will be published with full credit and link to your profile.</p>
+          </div>
+        </div>
+
+        <a href="mailto:contact@example.com?subject=Console%20Craft%20Registration%20Submission" class="btn btn-primary btn-large">
+          Submit Registrations via Email
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <span>Console Craft — an ODF builder for Hauptwerk by Adeboye Thompson.</span>
+    <span class="footer-dim">Not affiliated with Milan Digital Audio.</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
