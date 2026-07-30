@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Peterborough Cathedral — Organ Registration Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-main: #0a0e17;
+    --panel-bg: rgba(20, 27, 44, 0.75);
+    --panel-border: rgba(255, 255, 255, 0.08);
+    --text-primary: #f1f5f9;
+    --text-muted: #94a3b8;
+    --accent-cyan: #38bdf8;
+    --accent-gold: #fbbf24;
+    --accent-ruby: #f43f5e;
+    --accent-emerald: #34d399;
+    --glow-color: rgba(56, 189, 248, 0.4);
+    --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  body.theme-scary {
+    --glow-color: rgba(244, 63, 94, 0.6);
+    --accent-cyan: #f43f5e;
+  }
+
+  body.theme-tutti {
+    --glow-color: rgba(251, 191, 36, 0.6);
+    --accent-cyan: #fbbf24;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-main);
+    background-image: 
+      radial-gradient(circle at 50% 0%, rgba(30, 41, 59, 0.5) 0%, transparent 75%),
+      radial-gradient(circle at 80% 80%, rgba(15, 23, 42, 0.8) 0%, transparent 50%);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    padding: 24px 16px 48px;
+  }
+
+  .console {
+    max-width: 1280px;
+    margin: 0 auto;
+    background: var(--panel-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--panel-border);
+    border-radius: 20px;
+    box-shadow: 
+      0 25px 50px -12px rgba(0, 0, 0, 0.5),
+      0 0 40px var(--glow-color);
+    overflow: hidden;
+    transition: box-shadow 0.4s ease;
+  }
+
+  /* Header / Nameplate */
+  .header {
+    padding: 32px 24px 20px;
+    text-align: center;
+    border-bottom: 1px solid var(--panel-border);
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  }
+
+  .header .badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-cyan);
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  .header h1 {
+    margin: 0;
+    font-size: clamp(24px, 4vw, 38px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .header p {
+    margin: 8px 0 0;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* Crescendo Ribbon Bar */
+  .ribbon-section {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--panel-border);
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 12px;
+  }
+
+  .crescendo-grid {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scrollbar-width: thin;
+  }
+
+  .piston {
+    flex: 0 0 auto;
+    width: 62px;
+    height: 62px;
+    border-radius: 14px;
+    border: 1px solid var(--panel-border);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .piston .num {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .piston .dyn {
+    font-size: 9px;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .piston:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .piston.active {
+    background: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+    color: #000;
+    box-shadow: 0 0 20px var(--accent-cyan);
+  }
+
+  .piston.active .dyn { color: rgba(0, 0, 0, 0.8); }
+
+  /* Special Presets Bar */
+  .specials-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .pill-btn {
+    padding: 8px 16px;
+    border-radius: 30px;
+    border: 1px solid var(--panel-border);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-primary);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .pill-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .pill-btn.active {
+    background: var(--accent-gold);
+    border-color: var(--accent-gold);
+    color: #000;
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+  }
+
+  .pill-btn.pill-scary.active {
+    background: var(--accent-ruby);
+    border-color: var(--accent-ruby);
+    color: #fff;
+    box-shadow: 0 0 18px rgba(244, 63, 94, 0.6);
+  }
+
+  /* Preset Description Card */
+  .preset-info {
+    padding: 24px;
+    border-bottom: 1px solid var(--panel-border);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.01);
+  }
+
+  .preset-info h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .preset-info .use-tag {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-top: 4px;
+  }
+
+  .preset-info .notes {
+    font-size: 13px;
+    color: var(--accent-gold);
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  .dynamic-pill {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--panel-border);
+    color: var(--accent-cyan);
+    text-align: center;
+  }
+
+  /* Organ Jambs Grid */
+  .jambs-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    padding: 24px;
+  }
+
+  .jamb-card {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--panel-border);
+    border-radius: 14px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .jamb-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--panel-border);
+  }
+
+  .jamb-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-cyan);
+  }
+
+  .jamb-count {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .stops-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .stop-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+  }
+
+  .stop-item .stop-name {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+
+  .stop-item .stop-pitch {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.3);
+    margin-left: 6px;
+  }
+
+  .stop-item.active {
+    background: rgba(56, 189, 248, 0.08);
+    border-color: rgba(56, 189, 248, 0.3);
+  }
+
+  .stop-item.active .stop-name {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .stop-item.active .stop-pitch {
+    color: var(--accent-cyan);
+    font-weight: 700;
+  }
+
+  /* Lower Controls Panel */
+  .bottom-panel {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 16px;
+    padding: 0 24px 24px;
+  }
+
+  .control-box {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--panel-border);
+    border-radius: 14px;
+    padding: 16px;
+  }
+
+  .couplers-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .coupler-tag {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--panel-border);
+    color: var(--text-primary);
+  }
+
+  .shoes-row {
+    display: flex;
+    gap: 24px;
+    margin-top: 12px;
+  }
+
+  .shoe-meter {
+    flex: 1;
+  }
+
+  .shoe-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    margin-bottom: 6px;
+    color: var(--text-muted);
+  }
+
+  .meter-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .meter-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--accent-cyan);
+    transition: width 0.3s ease;
+  }
+
+  .trems-row {
+    display: flex;
+    gap: 16px;
+    margin-top: 14px;
+  }
+
+  .trem-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .trem-indicator.active { color: var(--accent-emerald); }
+  .trem-indicator.active .dot {
+    background: var(--accent-emerald);
+    box-shadow: 0 0 10px var(--accent-emerald);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1100px) {
+    .jambs-container { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 768px) {
+    .jambs-container { grid-template-columns: repeat(1, 1fr); }
+    .bottom-panel { grid-template-columns: 1fr; }
+    .preset-info { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="console">
+
+  <header class="header">
+    <span class="badge">Peterborough Cathedral Organ · 87 Stops</span>
+    <h1>Ato Snow Registration Console</h1>
+    <p>Interactive registration scheme & crescendo ladder</p>
+  </header>
+
+  <section class="ribbon-section">
+    <p class="section-label">15-Level Terraced Crescendo</p>
+    <div class="crescendo-grid" id="crescendoPistons"></div>
+  </section>
+
+  <section class="ribbon-section">
+    <p class="section-label">Solo & Special Presets</p>
+    <div class="specials-grid" id="specialPills"></div>
+  </section>
+
+  <section class="preset-info">
+    <div>
+      <h2 id="presetTitle">Select a Preset</h2>
+      <div class="use-tag" id="presetUse"></div>
+      <div class="notes" id="presetNotes"></div>
+    </div>
+    <div class="dynamic-pill" id="presetDynamic">—</div>
+  </section>
+
+  <section class="jambs-container">
+    <div class="jamb-card">
+      <div class="jamb-header">
+        <span class="jamb-title">Pedal</span>
+        <span class="jamb-count" id="count-pedal">0/21</span>
+      </div>
+      <div class="stops-list" id="stops-pedal"></div>
+    </div>
+
+    <div class="jamb-card">
+      <div class="jamb-header">
+        <span class="jamb-title">Choir</span>
+        <span class="jamb-count" id="count-choir">0/12</span>
+      </div>
+      <div class="stops-list" id="stops-choir"></div>
+    </div>
+
+    <div class="jamb-card">
+      <div class="jamb-header">
+        <span class="jamb-title">Great</span>
+        <span class="jamb-count" id="count-great">0/19</span>
+      </div>
+      <div class="stops-list" id="stops-great"></div>
+    </div>
+
+    <div class="jamb-card">
+      <div class="jamb-header">
+        <span class="jamb-title">Swell</span>
+        <span class="jamb-count" id="count-swell">0/18</span>
+      </div>
+      <div class="stops-list" id="stops-swell"></div>
+    </div>
+
+    <div class="jamb-card">
+      <div class="jamb-header">
+        <span class="jamb-title">Solo</span>
+        <span class="jamb-count" id="count-solo">0/17</span>
+      </div>
+      <div class="stops-list" id="stops-solo"></div>
+    </div>
+  </section>
+
+  <section class="bottom-panel">
+    <div class="control-box">
+      <div class="section-label">Active Couplers</div>
+      <div class="couplers-tags" id="couplerTags"></div>
+    </div>
+
+    <div class="control-box">
+      <div class="section-label">Expression & Controls</div>
+      <div class="shoes-row">
+        <div class="shoe-meter">
+          <div class="shoe-header">
+            <span>Swell Box</span>
+            <span id="swellLabel">Closed</span>
+          </div>
+          <div class="meter-bar"><div class="meter-fill" id="swellMeter"></div></div>
+        </div>
+
+        <div class="shoe-meter">
+          <div class="shoe-header">
+            <span>Solo Box</span>
+            <span id="soloLabel">Closed</span>
+          </div>
+          <div class="meter-bar"><div class="meter-fill" id="soloMeter"></div></div>
+        </div>
+      </div>
+
+      <div class="trems-row">
+        <div class="trem-indicator" id="swTrem"><span class="dot"></span> Swell Trem</div>
+        <div class="trem-indicator" id="solTrem"><span class="dot"></span> Solo Trem</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function() {
+  "use strict";
+
+  const STOPS = {
+    pedal: [
+      { label: "Double Open Diapason", pitch: "32" },
+      { label: "Open Diapason Wood", pitch: "16" },
+      { label: "Open Diapason Metal", pitch: "16" },
+      { label: "Violone", pitch: "16" },
+      { label: "Bourdon", pitch: "16" },
+      { label: "Dulciana", pitch: "16" },
+      { label: "Principal", pitch: "8" },
+      { label: "Bass Flute", pitch: "8" },
+      { label: "Violoncello", pitch: "8" },
+      { label: "Gemshorn", pitch: "4" },
+      { label: "Twelfth and Fifteenth", pitch: "II" },
+      { label: "Mixture", pitch: "III" },
+      { label: "Contra Trombone", pitch: "32" },
+      { label: "Trombone", pitch: "16" },
+      { label: "Contra Posaune", pitch: "16" },
+      { label: "Contra Tuba", pitch: "16" },
+      { label: "Clarinet", pitch: "16" },
+      { label: "Contra Oboe", pitch: "16" },
+      { label: "Trumpet", pitch: "8" },
+      { label: "Posaune", pitch: "8" },
+      { label: "Clarion", pitch: "4" }
+    ],
+    choir: [
+      { label: "Bourdon", pitch: "16" },
+      { label: "Open Diapason", pitch: "8" },
+      { label: "Dulciana", pitch: "8" },
+      { label: "Stopped Diapason", pitch: "8" },
+      { label: "Principal", pitch: "4" },
+      { label: "Flute", pitch: "4" },
+      { label: "Fifteenth", pitch: "2" },
+      { label: "Flautina", pitch: "2" },
+      { label: "Flageolet", pitch: "1" },
+      { label: "Mixture", pitch: "III" },
+      { label: "Bassoon", pitch: "16" },
+      { label: "Trumpet", pitch: "8" }
+    ],
+    great: [
+      { label: "Double Open Diapason", pitch: "16" },
+      { label: "Bourdon", pitch: "16" },
+      { label: "Open Diapason I", pitch: "8" },
+      { label: "Open Diapason II", pitch: "8" },
+      { label: "Open Diapason III", pitch: "8" },
+      { label: "Spitz Flöte", pitch: "8" },
+      { label: "Hohl Flöte", pitch: "8" },
+      { label: "Stopped Diapason", pitch: "8" },
+      { label: "Principal", pitch: "4" },
+      { label: "Geigen Principal", pitch: "4" },
+      { label: "Harmonic Flute", pitch: "4" },
+      { label: "Twelfth", pitch: "2 2/3" },
+      { label: "Fifteenth", pitch: "2" },
+      { label: "Full Mixture", pitch: "IV" },
+      { label: "Sharp Mixture", pitch: "III" },
+      { label: "Cornet", pitch: "IV" },
+      { label: "Contra Posaune", pitch: "16" },
+      { label: "Posaune", pitch: "8" },
+      { label: "Clarion", pitch: "4" }
+    ],
+    swell: [
+      { label: "Bourdon", pitch: "16" },
+      { label: "Open Diapason I", pitch: "8" },
+      { label: "Open Diapason II", pitch: "8" },
+      { label: "Rohr Flöte", pitch: "8" },
+      { label: "Salicional", pitch: "8" },
+      { label: "Voix Céleste", pitch: "8" },
+      { label: "Principal", pitch: "4" },
+      { label: "Salicet", pitch: "4" },
+      { label: "Wald Flute", pitch: "4" },
+      { label: "Fifteenth", pitch: "2" },
+      { label: "Mixture", pitch: "III" },
+      { label: "Cymbal", pitch: "IV" },
+      { label: "Contra Oboe", pitch: "16" },
+      { label: "Hautboy", pitch: "8" },
+      { label: "Double Trumpet", pitch: "16" },
+      { label: "Trumpet", pitch: "8" },
+      { label: "Horn", pitch: "8" },
+      { label: "Clarion", pitch: "4" }
+    ],
+    solo: [
+      { label: "Quintatön", pitch: "16" },
+      { label: "Viole", pitch: "8" },
+      { label: "Viole Céleste", pitch: "8" },
+      { label: "Unda Maris", pitch: "8" },
+      { label: "Concert Flute", pitch: "8" },
+      { label: "Octave Viole", pitch: "4" },
+      { label: "Flauto Traverso", pitch: "4" },
+      { label: "Piccolo", pitch: "2" },
+      { label: "Double Clarinet", pitch: "16" },
+      { label: "Orchestral Oboe", pitch: "8" },
+      { label: "Clarinet", pitch: "8" },
+      { label: "Vox Humana", pitch: "8" },
+      { label: "Contra Posaune", pitch: "16" },
+      { label: "Posaune", pitch: "8" },
+      { label: "Tuba", pitch: "8" },
+      { label: "Tuba Mirabilis", pitch: "8" },
+      { label: "Clarion", pitch: "4" }
+    ]
+  };
+
+  const PRESETS = [
+    { id: "level_1", num: 1, name: "Pianissimo", dynamic: "ppp", type: "level",
+      use: "Softest solo string, whisper level",
+      stops: { pedal: [], choir: [], great: [], swell: [], solo: ["Unda Maris 8", "Viole 8"] },
+      couplers: [], swellBox: "closed", soloBox: "closed", trem: [] },
+
+    { id: "level_2", num: 2, name: "Pianissimo+", dynamic: "pp", type: "level",
+      use: "Choir soft flutes/strings",
+      stops: { pedal: [], choir: ["Dulciana 8", "Stopped Diapason 8"], great: [], swell: [], solo: [] },
+      couplers: [], swellBox: "closed", soloBox: "closed", trem: [] },
+
+    { id: "level_3", num: 3, name: "Piano", dynamic: "p", type: "level",
+      use: "Swell strings with light pedal",
+      stops: { pedal: ["Bourdon 16"], choir: [], great: [], swell: ["Salicional 8", "Voix Céleste 8"], solo: [] },
+      couplers: ["Swell To Pedal"], swellBox: "closed", soloBox: "closed", trem: [] },
+
+    { id: "level_4", num: 4, name: "Piano+", dynamic: "p+", type: "level",
+      use: "Soft Great flutes",
+      stops: { pedal: ["Bourdon 16"], choir: [], great: ["Stopped Diapason 8", "Spitz Flöte 8"], swell: [], solo: [] },
+      couplers: ["Great To Pedal"], swellBox: "closed", soloBox: "closed", trem: [] },
+
+    { id: "level_5", num: 5, name: "Piano-Mezzo", dynamic: "p-mp", type: "level",
+      use: "Swell foundation + tremulant",
+      stops: { pedal: ["Bourdon 16", "Violoncello 8"], choir: [], great: [], swell: ["Rohr Flöte 8", "Principal 4"], solo: [] },
+      couplers: ["Swell To Pedal"], swellBox: "25%", soloBox: "closed", trem: ["swell"] },
+
+    { id: "level_6", num: 6, name: "Mezzo-Piano", dynamic: "mp", type: "level",
+      use: "Great Diapason foundation",
+      stops: { pedal: ["Bourdon 16", "Principal 8"], choir: [], great: ["Open Diapason I 8", "Stopped Diapason 8", "Principal 4"], swell: [], solo: [] },
+      couplers: ["Great To Pedal"], swellBox: "closed", soloBox: "closed", trem: [] },
+
+    { id: "level_7", num: 7, name: "Mezzo-Piano+", dynamic: "mp+", type: "level",
+      use: "Great chorus expands, Swell blended softly",
+      stops: { pedal: ["Bourdon 16", "Principal 8", "Violone 16"], choir: [], great: ["Open Diapason I 8", "Open Diapason II 8", "Stopped Diapason 8", "Principal 4", "Harmonic Flute 4"], swell: ["Salicional 8", "Voix Céleste 8"], solo: [] },
+      couplers: ["Swell To Great", "Great To Pedal"], swellBox: "25%", soloBox: "closed", trem: [] },
+
+    { id: "level_8", num: 8, name: "Mezzo", dynamic: "mf-", type: "level",
+      use: "Full Great Diapason chorus to 2'",
+      stops: { pedal: ["Open Diapason Wood 16", "Bourdon 16", "Principal 8"], choir: [], great: ["Open Diapason I 8", "Open Diapason II 8", "Open Diapason III 8", "Stopped Diapason 8", "Principal 4", "Twelfth 2 2/3", "Fifteenth 2"], swell: [], solo: [] },
+      couplers: ["Great To Pedal"], swellBox: "closed", soloBox: "closed", trem: [] },
+
+    { id: "level_9", num: 9, name: "Mezzo+", dynamic: "mf", type: "level",
+      use: "Swell chorus reeds added",
+      stops: { pedal: ["Open Diapason Wood 16", "Bourdon 16", "Principal 8", "Trombone 16"], choir: [], great: ["Open Diapason I 8", "Open Diapason II 8", "Open Diapason III 8", "Stopped Diapason 8", "Principal 4", "Twelfth 2 2/3", "Fifteenth 2"], swell: ["Hautboy 8", "Trumpet 8"], solo: [] },
+      couplers: ["Swell To Great", "Great To Pedal"], swellBox: "50%", soloBox: "closed", trem: [] },
+
+    { id: "level_10", num: 10, name: "Mezzo-Forte", dynamic: "mf+", type: "level",
+      use: "Mixtures engaged on Great and Swell",
+      stops: { pedal: ["Open Diapason Wood 16", "Bourdon 16", "Principal 8", "Trombone 16", "Posaune 8", "Trumpet 8"], choir: [], great: ["Open Diapason I 8", "Open Diapason II 8", "Open Diapason III 8", "Stopped Diapason 8", "Principal 4", "Twelfth 2 2/3", "Fifteenth 2", "Sharp Mixture III"], swell: ["Hautboy 8", "Trumpet 8", "Mixture III"], solo: [] },
+      couplers: ["Swell To Great", "Great To Pedal", "Swell To Pedal"], swellBox: "75%", soloBox: "closed", trem: [] },
+
+    { id: "level_11", num: 11, name: "Forte", dynamic: "f", type: "level",
+      use: "Full Great mixture chorus, Choir coupled",
+      stops: { pedal: ["Open Diapason Wood 16", "Bourdon 16", "Principal 8", "Trombone 16", "Contra Posaune 16", "Posaune 8", "Trumpet 8"], choir: ["Bassoon 16", "Trumpet 8"], great: ["Open Diapason I 8", "Open Diapason II 8", "Open Diapason III 8", "Stopped Diapason 8", "Principal 4", "Twelfth 2 2/3", "Fifteenth 2", "Sharp Mixture III", "Full Mixture IV"], swell: ["Hautboy 8", "Trumpet 8", "Mixture III"], solo: [] },
+      couplers: ["Swell To Great", "Choir To Great", "Great To Pedal", "Swell To Pedal", "Choir To Pedal"], swellBox: "75%", soloBox: "closed", trem: [] },
+
+    { id: "level_12", num: 12, name: "Forte+", dynamic: "f+", type: "level",
+      use: "Full Swell & Great reed choruses, 32' Pedal reed",
+      stops: { pedal: ["Open Diapason Wood 16", "Bourdon 16", "Principal 8", "Contra Trombone 32", "Trombone 16", "Contra Posaune 16", "Posaune 8", "Trumpet 8", "Clarion 4"], choir: ["Bassoon 16", "Trumpet 8"], great: ["Open Diapason I 8", "Open Diapason II 8", "Open Diapason III 8", "Stopped Diapason 8", "Principal 4", "Twelfth 2 2/3", "Fifteenth 2", "Sharp Mixture III", "Full Mixture IV", "Cornet IV", "Posaune 8", "Clarion 4"], swell: ["Hautboy 8", "Trumpet 8", "Mixture III", "Double Trumpet 16", "Horn 8", "Clarion 4"], solo: [] },
+      couplers: ["Swell To Great", "Choir To Great", "Solo To Great", "Great To Pedal", "Swell To Pedal", "Choir To Pedal", "Solo To Pedal"], swellBox: "100%", soloBox: "closed", trem: [] },
+
+    { id: "level_13", num: 13, name: "Fortissimo", dynamic: "ff", type: "level",
+      use: "Solo Tuba 8 drawn & coupled in",
+      stops: { pedal: ["Open Diapason Wood 16", "Bourdon 16", "Principal 8", "Contra Trombone 32", "Trombone 16", "Contra Posaune 16", "Posaune 8", "Trumpet 8", "Clarion 4", "Contra Tuba 16"], choir: ["Bassoon 16", "Trumpet 8"], great: ["Open Diapason I 8", "Open Diapason II 8", "Open Diapason III 8", "Stopped Diapason 8", "Principal 4", "Twelfth 2 2/3", "Fifteenth 2", "Sharp Mixture III", "Full Mixture IV", "Cornet IV", "Posaune 8", "Clarion 4"], swell: ["Hautboy 8", "Trumpet 8", "Mixture III", "Double Trumpet 16", "Horn 8", "Clarion 4"], solo: ["Tuba 8"] },
+      couplers: ["Swell To Great", "Choir To Great", "Solo To Great", "Great To Pedal", "Swell To Pedal", "Choir To Pedal", "Solo To Pedal"], swellBox: "100%", soloBox: "100%", trem: [] },
+
+    { id: "level_14", num: 14, name: "Fortissimo+", dynamic: "fff", type: "level",
+      use: "Every mixture & reed across all divisions engaged",
+      stops: { pedal: ["Double Open Diapason 32", "Open Diapason Wood 16", "Open Diapason Metal 16", "Violone 16", "Bourdon 16", "Principal 8", "Bass Flute 8", "Twelfth and Fifteenth II", "Mixture III", "Contra Trombone 32", "Trombone 16", "Contra Posaune 16", "Contra Tuba 16", "Contra Oboe 16", "Trumpet 8", "Posaune 8", "Clarion 4"], choir: ["Open Diapason 8", "Dulciana 8", "Stopped Diapason 8", "Principal 4", "Flute 4", "Fifteenth 2", "Mixture III", "Bassoon 16", "Trumpet 8"], great: ["Double Open Diapason 16", "Open Diapason I 8", "Open Diapason II 8", "Open Diapason III 8", "Stopped Diapason 8", "Principal 4", "Harmonic Flute 4", "Twelfth 2 2/3", "Fifteenth 2", "Full Mixture IV", "Sharp Mixture III", "Cornet IV", "Contra Posaune 16", "Posaune 8", "Clarion 4"], swell: ["Open Diapason I 8", "Open Diapason II 8", "Principal 4", "Fifteenth 2", "Mixture III", "Cymbal IV", "Contra Oboe 16", "Hautboy 8", "Double Trumpet 16", "Trumpet 8", "Horn 8", "Clarion 4"], solo: ["Quintatön 16", "Concert Flute 8", "Octave Viole 4", "Piccolo 2", "Double Clarinet 16", "Orchestral Oboe 8", "Clarinet 8", "Contra Posaune 16", "Posaune 8", "Tuba 8"] },
+      couplers: ["Swell To Great", "Choir To Great", "Solo To Great", "Great To Pedal", "Swell To Pedal", "Choir To Pedal", "Solo To Pedal", "Swell To Choir", "Solo To Choir", "Solo To Swell"], swellBox: "100%", soloBox: "100%", trem: [] },
+
+    { id: "level_15", num: 15, name: "Tutti", dynamic: "TUTTI", type: "level",
+      use: "Every stop drawn, including Tuba Mirabilis & 32' flues",
+      notes: "All 87 stops active across all 5 divisions at full cry.",
+      stops: {
+        pedal: ["Double Open Diapason 32", "Open Diapason Wood 16", "Open Diapason Metal 16", "Violone 16", "Bourdon 16", "Dulciana 16", "Principal 8", "Bass Flute 8", "Violoncello 8", "Gemshorn 4", "Twelfth and Fifteenth II", "Mixture III", "Contra Trombone 32", "Trombone 16", "Contra Posaune 16", "Contra Tuba 16", "Clarinet 16", "Contra Oboe 16", "Trumpet 8", "Posaune 8", "Clarion 4"],
+        choir: ["Bourdon 16", "Open Diapason 8", "Dulciana 8", "Stopped Diapason 8", "Principal 4", "Flute 4", "Fifteenth 2", "Flautina 2", "Flageolet 1", "Mixture III", "Bassoon 16", "Trumpet 8"],
+        great: ["Double Open Diapason 16", "Bourdon 16", "Open Diapason I 8", "Open Diapason II 8", "Open Diapason III 8", "Spitz Flöte 8", "Hohl Flöte 8", "Stopped Diapason 8", "Principal 4", "Geigen Principal 4", "Harmonic Flute 4", "Twelfth 2 2/3", "Fifteenth 2", "Full Mixture IV", "Sharp Mixture III", "Cornet IV", "Contra Posaune 16", "Posaune 8", "Clarion 4"],
+        swell: ["Bourdon 16", "Open Diapason I 8", "Open Diapason II 8", "Rohr Flöte 8", "Salicional 8", "Voix Céleste 8", "Principal 4", "Salicet 4", "Wald Flute 4", "Fifteenth 2", "Mixture III", "Cymbal IV", "Contra Oboe 16", "Hautboy 8", "Double Trumpet 16", "Trumpet 8", "Horn 8", "Clarion 4"],
+        solo: ["Quintatön 16", "Viole 8", "Viole Céleste 8", "Unda Maris 8", "Concert Flute 8", "Octave Viole 4", "Flauto Traverso 4", "Piccolo 2", "Double Clarinet 16", "Orchestral Oboe 8", "Clarinet 8", "Vox Humana 8", "Contra Posaune 16", "Posaune 8", "Tuba 8", "Tuba Mirabilis 8", "Clarion 4"]
+      },
+      couplers: ["Swell To Great", "Choir To Great", "Solo To Great", "Great To Pedal", "Swell To Pedal", "Choir To Pedal", "Solo To Pedal", "Swell To Choir", "Solo To Choir", "Solo To Swell", "Swell Octave", "Swell Sub Octave", "Solo Octave", "Solo Sub Octave"],
+      swellBox: "100%", soloBox: "100%", trem: [] },
+
+    /* Special Presets */
+    { id: "spec_tuba_fanfare", name: "Tuba Solo (Fanfare)", dynamic: "SOLO FF", type: "special",
+      use: "Processionals & fanfare entrances",
+      notes: "Unenclosed Tuba Mirabilis melody over Great foundation.",
+      stops: { pedal: ["Bourdon 16", "Violone 16"], choir: [], great: ["Open Diapason I 8", "Stopped Diapason 8", "Principal 4"], swell: [], solo: ["Tuba Mirabilis 8"] },
+      couplers: ["Great To Pedal"], swellBox: "closed", soloBox: "Unenclosed", trem: [] },
+
+    { id: "spec_tuba_lyric", name: "Tuba Solo (Lyric)", dynamic: "SOLO MF", type: "special",
+      use: "Lyric solo melody line",
+      stops: { pedal: ["Bourdon 16"], choir: [], great: [], swell: ["Salicional 8", "Voix Céleste 8"], solo: ["Tuba 8"] },
+      couplers: [], swellBox: "closed", soloBox: "50%", trem: ["swell"] },
+
+    { id: "spec_clarinet", name: "Clarinet Solo", dynamic: "SOLO P", type: "special",
+      use: "Reflective solo verse",
+      stops: { pedal: ["Bourdon 16"], choir: ["Stopped Diapason 8", "Flute 4"], great: [], swell: [], solo: ["Clarinet 8"] },
+      couplers: [], swellBox: "closed", soloBox: "25%", trem: [] },
+
+    { id: "spec_oboe", name: "Orchestral Oboe Solo", dynamic: "SOLO MP", type: "special",
+      use: "Wistful solo verse",
+      stops: { pedal: ["Bourdon 16"], choir: [], great: [], swell: ["Rohr Flöte 8", "Salicet 4"], solo: ["Orchestral Oboe 8"] },
+      couplers: [], swellBox: "closed", soloBox: "50%", trem: ["swell"] },
+
+    { id: "spec_vox", name: "Vox Humana Solo", dynamic: "SOLO PP", type: "special",
+      use: "Ethereal, meditative solo",
+      stops: { pedal: [], choir: ["Dulciana 8", "Stopped Diapason 8"], great: [], swell: [], solo: ["Vox Humana 8"] },
+      couplers: [], swellBox: "closed", soloBox: "25%", trem: ["solo"] },
+
+    { id: "spec_cornet", name: "Cornet Voluntary", dynamic: "SOLO MF", type: "special",
+      use: "French-style solo voluntary",
+      stops: { pedal: ["Bourdon 16"], choir: ["Dulciana 8", "Stopped Diapason 8"], great: ["Cornet IV"], swell: [], solo: [] },
+      couplers: [], swellBox: "closed", soloBox: "closed", trem: [] },
+
+    { id: "spec_horn", name: "French Horn Solo", dynamic: "SOLO MF", type: "special",
+      use: "Warm solo melody line",
+      stops: { pedal: ["Bourdon 16", "Violoncello 8"], choir: ["Open Diapason 8", "Stopped Diapason 8"], great: [], swell: ["Horn 8"], solo: [] },
+      couplers: [], swellBox: "50%", soloBox: "closed", trem: ["swell"] },
+
+    { id: "spec_string", name: "String Celeste Solo", dynamic: "SOLO P", type: "special",
+      use: "Lush undulating melody line",
+      stops: { pedal: ["Bourdon 16"], choir: [], great: ["Stopped Diapason 8", "Harmonic Flute 4"], swell: [], solo: ["Viole 8", "Viole Céleste 8"] },
+      couplers: [], swellBox: "closed", soloBox: "25%", trem: [] },
+
+    { id: "spec_piccolo", name: "Piccolo Solo", dynamic: "SOLO MF", type: "special",
+      use: "Bright, playful solo passages",
+      stops: { pedal: ["Bourdon 16"], choir: ["Dulciana 8", "Flute 4"], great: [], swell: [], solo: ["Piccolo 2", "Flauto Traverso 4"] },
+      couplers: [], swellBox: "closed", soloBox: "100%", trem: [] },
+
+    { id: "spec_scary", name: "Hellish / Abysmal / Scary", dynamic: "DARK", type: "special",
+      use: "Judgment, terror, and abyss effects",
+      notes: "Dark 16'/32' reeds and wavering Vox Humana; avoids bright upperwork.",
+      stops: {
+        pedal: ["Double Open Diapason 32", "Contra Trombone 32", "Contra Tuba 16", "Contra Posaune 16", "Contra Oboe 16", "Bourdon 16"],
+        choir: ["Bassoon 16", "Dulciana 8"],
+        great: ["Double Open Diapason 16"],
+        swell: ["Contra Oboe 16", "Double Trumpet 16", "Horn 8", "Cymbal IV"],
+        solo: ["Vox Humana 8", "Quintatön 16", "Double Clarinet 16", "Contra Posaune 16"]
+      },
+      couplers: ["Swell To Great", "Solo To Great", "Solo To Pedal", "Swell Sub Octave", "Solo Sub Octave"],
+      swellBox: "Snap open", soloBox: "Snap open", trem: ["choir", "swell", "solo"] }
+  ];
+
+  function renderStops() {
+    Object.keys(STOPS).forEach(div => {
+      const container = document.getElementById(`stops-${div}`);
+      container.innerHTML = "";
+      STOPS[div].forEach(stop => {
+        const item = document.createElement("div");
+        item.className = "stop-item";
+        item.dataset.key = `${stop.label} ${stop.pitch}`;
+        item.innerHTML = `
+          <span class="stop-name">${stop.label}</span>
+          <span class="stop-pitch">${stop.pitch}′</span>
+        `;
+        container.appendChild(item);
+      });
+    });
+  }
+
+  function renderPistons() {
+    const crescendoBox = document.getElementById("crescendoPistons");
+    const specialsBox = document.getElementById("specialPills");
+
+    PRESETS.filter(p => p.type === "level").forEach(p => {
+      const btn = document.createElement("button");
+      btn.className = "piston";
+      btn.dataset.id = p.id;
+      btn.innerHTML = `<span class="num">${p.num}</span><span class="dyn">${p.dynamic}</span>`;
+      btn.onclick = () => selectPreset(p.id);
+      crescendoBox.appendChild(btn);
+    });
+
+    PRESETS.filter(p => p.type === "special").forEach(p => {
+      const btn = document.createElement("button");
+      btn.className = `pill-btn ${p.id === 'spec_scary' ? 'pill-scary' : ''}`;
+      btn.dataset.id = p.id;
+      btn.innerText = p.name;
+      btn.onclick = () => selectPreset(p.id);
+      specialsBox.appendChild(btn);
+    });
+  }
+
+  function selectPreset(id) {
+    const preset = PRESETS.find(p => p.id === id);
+    if (!preset) return;
+
+    // Theme toggle
+    document.body.classList.toggle("theme-scary", id === "spec_scary");
+    document.body.classList.toggle("theme-tutti", id === "level_15");
+
+    // Button states
+    document.querySelectorAll(".piston, .pill-btn").forEach(el => {
+      el.classList.toggle("active", el.dataset.id === id);
+    });
+
+    // Info card
+    document.getElementById("presetTitle").innerText = preset.name;
+    document.getElementById("presetUse").innerText = preset.use;
+    document.getElementById("presetNotes").innerText = preset.notes || "";
+    document.getElementById("presetDynamic").innerText = preset.dynamic;
+
+    // Update Stops
+    Object.keys(STOPS).forEach(div => {
+      const activeStops = preset.stops[div] || [];
+      const divContainer = document.getElementById(`stops-${div}`);
+      let count = 0;
+
+      divContainer.querySelectorAll(".stop-item").forEach(item => {
+        const isActive = activeStops.includes(item.dataset.key);
+        item.classList.toggle("active", isActive);
+        if (isActive) count++;
+      });
+
+      document.getElementById(`count-${div}`).innerText = `${count}/${STOPS[div].length}`;
+    });
+
+    // Couplers
+    const couplersBox = document.getElementById("couplerTags");
+    couplersBox.innerHTML = "";
+    if (preset.couplers.length) {
+      preset.couplers.forEach(c => {
+        const tag = document.createElement("span");
+        tag.className = "coupler-tag";
+        tag.innerText = c;
+        couplersBox.appendChild(tag);
+      });
+    } else {
+      couplersBox.innerHTML = `<span style="font-size:12px; color:var(--text-muted); font-style:italic;">No couplers drawn</span>`;
+    }
+
+    // Expression Meters
+    updateMeter("swellMeter", "swellLabel", preset.swellBox);
+    updateMeter("soloMeter", "soloLabel", preset.soloBox);
+
+    // Tremulants
+    document.getElementById("swTrem").classList.toggle("active", preset.trem.includes("swell"));
+    document.getElementById("solTrem").classList.toggle("active", preset.trem.includes("solo"));
+  }
+
+  function updateMeter(meterId, labelId, val) {
+    const fill = document.getElementById(meterId);
+    const label = document.getElementById(labelId);
+    label.innerText = val;
+
+    if (val === "closed") fill.style.width = "0%";
+    else if (val === "25%") fill.style.width = "25%";
+    else if (val === "50%") fill.style.width = "50%";
+    else if (val === "75%") fill.style.width = "75%";
+    else if (val === "100%") fill.style.width = "100%";
+    else fill.style.width = "100%";
+  }
+
+  // Init
+  renderStops();
+  renderPistons();
+  selectPreset("level_1");
+
+})();
+</script>
+
+</body>
+</html>
